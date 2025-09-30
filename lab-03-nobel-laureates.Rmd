@@ -67,7 +67,7 @@ library(tidyverse)
 The dataset for this assignment can be found as a CSV (comma separated values) file in the `data` folder of your repository.
 You can read it in using the following.
 
-```{r load-data, message = FALSE}
+```{r load-data, message = FALSE, eval=TRUE}
 nobel <- read_csv("data/nobel.csv")
 ```
 
@@ -108,8 +108,15 @@ In these cases the variables below reflect a different name than their counterpa
 
 ## Get to know your data
 
-1.  How many observations and how many variables are in the dataset? Use inline code to answer this question. What does each row represent?
+1.  How many observations and how many variables are in the dataset? Use inline code to answer this question. What does each row represent?  
+      
+    ANSWER: There are 935 observations and there are 26 variables in the dataset. 
 
+```{r echo=TRUE, eval=TRUE}
+glimpse(nobel)
+  
+```
+    
 There are some observations in this dataset that we will exclude from our analysis to match the Buzzfeed results.
 
 2.  Create a new data frame called `nobel_living` that filters for
@@ -118,13 +125,15 @@ There are some observations in this dataset that we will exclude from our analys
 -   laureates who are people as opposed to organizations (organizations are denoted with `"org"` as their `gender`)
 -   laureates who are still alive (their `died_date` is `NA`)
 
-```{r echo=FALSE}
+```{r echo=TRUE, eval=TRUE}
 nobel_living <- nobel %>%
   filter(
     !is.na(country),
     gender != "org",
     is.na(died_date)
   )
+
+glimpse(nobel_living)
 ```
 
 Confirm that once you have filtered for these characteristics you are left with a data frame with `r nrow(nobel_living)` observations, once again using inline code.
