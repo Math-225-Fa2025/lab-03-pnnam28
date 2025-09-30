@@ -157,7 +157,7 @@ If not, we set the `country_us` to `"Other"`.
 Note that we can achieve the same result using the `fct_other()` function we've seen before (i.e. with `country_us = fct_other(country, "USA")`). We decided to use the `if_else()` here to show you one example of an if statement in R.
 ```
 
-```{r}
+```{r eval=TRUE}
 nobel_living <- nobel_living %>%
   mutate(
     country_us = if_else(country == "USA", "USA", "Other")
@@ -166,7 +166,7 @@ nobel_living <- nobel_living %>%
 
 Next, we will limit our analysis to only the following categories: Physics, Medicine, Chemistry, and Economics.
 
-```{r}
+```{r filter_catagories, eval=TRUE}
 nobel_living_science <- nobel_living %>%
   filter(category %in% c("Physics", "Medicine", "Chemistry", "Economics"))
 ```
@@ -180,6 +180,30 @@ This means you'll need to define this data frame in your R Markdown document, ev
     -   Your visualization should be faceted by category.
     -   For each facet you should have two bars, one for winners in the US and one for Other.
     -   Flip the coordinates so the bars are horizontal, not vertical.
+    
+    ANSWER: Based on the plot we can say that the Buzzfeed was true. Most of the Laureate was from USA.
+    
+```{r plot_catagories_vs_US,message=TRUE, eval=TRUE, echo=TRUE}
+nobel_living_science %>% 
+  ggplot(aes(x=country_us))+
+  geom_bar(color="black", width = 0.7)+
+  coord_flip()+
+  facet_wrap(~category)+
+  labs(
+    title = "Nobel Prizes by Category",
+    subtitle = "Comparing US vs Other countries",
+    x= "Country",
+    y = "Count",
+  )+
+  theme_minimal()+
+  theme(
+    plot.title = element_text
+      (hjust = 0.5, size = 16, face = "bold"),
+    plot.subtitle = element_text
+      (hjust = 0.5, size = 12, face = "italic")
+  )
+
+```
 
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.d*
 
@@ -191,7 +215,16 @@ This means you'll need to define this data frame in your R Markdown document, ev
 
 4.  Create a new variable called `born_country_us` that has the value `"USA"` if the laureate is born in the US, and `"Other"` otherwise.
     How many of the winners are born in the US?
+```{r create_born_in_US, eval=TRUE, echo=TRUE}
+nobel_living_science <- nobel_living_science %>%
+  mutate(
+    born_country_us = if_else(born_country == "USA","USA", "Other")
+  )
 
+nobel_living_science%>%
+  count(born_country_us)
+
+```
 5.  Add a second variable to your visualization from Exercise 3 based on whether the laureate was born in the US or not.
     Based on your visualization, do the data appear to support Buzzfeed's claim?
     Explain your reasoning in 1-2 sentences.
@@ -199,6 +232,31 @@ This means you'll need to define this data frame in your R Markdown document, ev
     -   Your final visualization should contain a facet for each category.
     -   Within each facet, there should be a bar for whether the laureate won the award in the US or not.
     -   Each bar should have segments for whether the laureate was born in the US or not.
+  
+    ANSWER: Overall, there are about 2/3 of the laureate was born outside of the US in Chemistry, Medicine and Physics catagories. On the other side, we can say that most of the eventhough the USA has the most Nobel laureate in Economics but there were about 1/6 of the laureate was born outside of the US.There are a small number of laureate was born in the US but got the nobel prize for Other countries in Medicine and Physic catagorized.
+
+```{r plot_born_in_us, eval=TRUE, echo=TRUE}
+nobel_living_science %>% 
+  ggplot(aes(x=country_us,fill = born_country_us))+
+  geom_bar(color="black", width = 0.7)+
+  coord_flip()+
+  facet_wrap(~category)+
+  labs(
+    title = "Nobel Prizes by Category",
+    subtitle = "Comparing US vs Other countries",
+    x= "Country",
+    y = "Count",
+    fill = "Country of Birth"
+    
+  )+
+  theme_minimal()+
+  theme(
+    plot.title = element_text
+      (hjust = 0.5, size = 16, face = "bold"),
+    plot.subtitle = element_text
+      (hjust = 0.5, size = 12, face = "italic")
+  )
+```
 
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards.*
 
@@ -209,6 +267,15 @@ Note that your bar plot won't exactly match the one from the Buzzfeed article. T
 ```
 
 6.  In a single pipeline, filter for laureates who won their prize in the US, but were born outside of the US, and then create a frequency table (with the `count()` function) for their birth country (`born_country`) and arrange the resulting data frame in descending order of number of observations for each country. Which country is the most common?
+
+```{r Nobel_prize_outsideUS, eval=TRUE, echo=TRUE}
+nobel_living_science %>%
+  filter(born_country != "USA") %>%
+  count(born_country)%>%
+  arrange(desc(n))
+```
+
+
 
 🧶 ✅ ⬆️ Knit, *commit, and push your changes to GitHub with an appropriate commit message. Make sure to commit and push all changed files so that your Git pane is cleared up afterwards and review the md document on GitHub to make sure you're happy with the final state of your work.*
 
